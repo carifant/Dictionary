@@ -1,2 +1,1 @@
- A small widget for searching the weather in Nizhny Novgorod
- used by: jsoup, java fx
+Program for learning new English words.
