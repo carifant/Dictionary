@@ -19,4 +19,20 @@ public class Storage {
       storage.put(eng, set);
     }
   }
+
+  public void deleteWord(String eng) {
+    storage.remove(eng);
+  }
+
+  public Map<String, Set<String>> getStorage() {
+    return storage;
+  }
+
+  public Set<String> getTranslate(String eng) {
+    if (storage.containsKey(eng)) {
+      return storage.get(eng);
+    } else {
+      return null;
+    }
+  }
 }

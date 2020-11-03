@@ -16,23 +16,23 @@ public class Console {
     arr[4] = "3) выйти из программы.";
   }
 
-  private void chooser() {
+  public void chooser() {
     try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in))) {
       String temp = bufferedReader.readLine();
       if (Integer.parseInt(temp) == 1) {
-        new FiestStage().starter();
+        new FirstStage().starter();
       } else if (Integer.parseInt(temp) == 2) {
-        System.out.println("Второй режим");
-      } else if(Integer.parseInt(temp) == 3) {
+        new SecondStage().starter();
+      } else if (Integer.parseInt(temp) == 3) {
         System.out.println("Программа завершена");
         System.exit(0);
       }
-    } catch ( IOException ex) {
+    } catch (IOException ex) {
       ex.printStackTrace();
     }
   }
 
-  public void mainMethod(){
+  public void mainMethod() {
     setOfArr();
     for (int i = 0; i < arr.length; i++) {
       System.out.println(arr[i]);
