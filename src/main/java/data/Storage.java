@@ -32,7 +32,7 @@ public class Storage {
     if (storage.containsKey(eng)) {
       return storage.get(eng);
     } else {
-      return null;
+      return new HashSet<>();
     }
   }
 }

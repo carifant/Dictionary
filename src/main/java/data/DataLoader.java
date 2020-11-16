@@ -9,8 +9,10 @@ import java.util.Properties;
 
 public class DataLoader {
 
-  private Connection connection;
-  private String tableName;
+  private Connection firstConnection;
+  private Connection secondConnection;
+  private String tableName1;
+  private String tableName2;
   private String login;
   private String password;
 
@@ -21,15 +23,28 @@ public class DataLoader {
 
     try(InputStream in = DataLoader.class.getClassLoader().getResourceAsStream("postgress.properties")) {
       properties.load(in);
-      tableName = properties.getProperty("tableName1");
+      tableName1 = properties.getProperty("tableName1");
+      tableName2 = properties.getProperty("tableName2");
+      Class.forName("org.postgresql.Driver");
       login = properties.getProperty("login");
       password = properties.getProperty("password");
-      connection =
-            DriverManager.getConnection("jdbc:postgresql://localhost:5432/"
-                  + tableName + ", " + login + ", "  + password);
-    } catch (SQLException | IOException e) {
+      firstConnection =
+            DriverManager.getConnection("jdbc:postgresql://localhost:5432/" + tableName1,
+                  login, password);
+
+      secondConnection =
+            DriverManager.getConnection("jdbc:postgresql://localhost:5432/" + tableName2,
+                  login, password);
+    } catch (SQLException | IOException | ClassNotFoundException e) {
       e.printStackTrace();
     }
   }
 
+  public Connection getFirstConnection() {
+    return firstConnection;
+  }
+
+  public Connection getSecondConnection() {
+    return secondConnection;
+  }
 }
