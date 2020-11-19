@@ -1,5 +1,6 @@
 package mainPackage;
 
+import data.Loader;
 import data.Storage;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,6 +34,8 @@ public class FirstStage {
         String tempEng = bufferedReader.readLine().toLowerCase();
         String tempRus = bufferedReader.readLine().toLowerCase();
         new Storage().addWord(tempEng, tempRus);
+        new Loader().insertToFirstTable(tempEng);
+        new Loader().insertToSecondTable(tempRus, tempEng);
         System.out.println("Слово добавлено в словарь");
       } else if (Integer.parseInt(temp) == 2) {
         System.out.println("Введите слово, которое хотите удалить из словаря");
