@@ -8,6 +8,10 @@ public class Console {
 
   private String[] arr = new String[5];
 
+  private BufferedReader getBufferedReader(){
+    return new BufferedReader(new InputStreamReader(System.in));
+  }
+
   private void setOfArr() {
     arr[0] = "Добро пожаловать в программу изучения слов Английского языка!";
     arr[1] = "Для выбора режима работы, введите номер пункта меню:";
@@ -16,28 +20,29 @@ public class Console {
     arr[4] = "3) выйти из программы.";
   }
 
-  public void chooser() {
-    try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in))) {
-      String temp = bufferedReader.readLine();
-      if (Integer.parseInt(temp) == 1) {
-        new FirstStage().starter();
-      } else if (Integer.parseInt(temp) == 2) {
-        new SecondStage().starter();
-      } else if (Integer.parseInt(temp) == 3) {
-        System.out.println("Программа завершена");
-        System.exit(0);
+  public void chooser() throws IOException {
+        String temp = getBufferedReader().readLine();
+        if (Integer.parseInt(temp) == 1) {
+          new FirstStage().starter();
+        } else if (Integer.parseInt(temp) == 2) {
+          new SecondStage().starter();
+        } else if (Integer.parseInt(temp) == 3) {
+          System.out.println("Программа завершена");
+          System.exit(0);
       }
-    } catch (IOException ex) {
-      ex.printStackTrace();
-    }
   }
 
   public void mainMethod() {
-    setOfArr();
-    for (int i = 0; i < arr.length; i++) {
-      System.out.println(arr[i]);
+      setOfArr();
+      for (String s : arr) {
+        System.out.println(s);
+      }
+    try {
+      chooser();
+    } catch (IOException e) {
+      e.printStackTrace();
     }
-    chooser();
   }
 
-}
+  }
+

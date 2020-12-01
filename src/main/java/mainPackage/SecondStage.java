@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 public class SecondStage {
 
   private String[] arr = new String[3];
-
+  BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
   private void setMethod() {
     arr[0] = "Выберите желаемое действие:";
     arr[1] = "1) Запустить проверку ваших знаний.";
@@ -21,10 +21,11 @@ public class SecondStage {
   }
 
   private void chooser() {
-    try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in))) {
-      String temp = bufferedReader.readLine();
+    try  {
+      String temp = reader.readLine();
       if (Integer.parseInt(temp) == 1) {
         new QuizGame().quizGame();
+        System.exit(0);
       } else if (Integer.parseInt(temp) == 2) {
         new Console().mainMethod();
       }

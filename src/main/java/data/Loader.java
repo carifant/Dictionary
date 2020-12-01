@@ -4,13 +4,14 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 public class Loader {
-  private Connection firstConnection = new DataLoader().getFirstConnection();
+  private Connection firstConnection = new DataLoader().getConnection();
   private Statement statement;
-  private Map<String, Set<String>> map = new Storage().getStorage();
 
   public Statement getStatement() {
     try {
@@ -23,7 +24,6 @@ public class Loader {
 
   public void insertToFirstTable(String newWord) {
     try {
-
       getStatement().executeUpdate("insert into dictionary (word) values ('" + newWord + "')");
     } catch (SQLException ex) {
       ex.printStackTrace();
@@ -32,17 +32,16 @@ public class Loader {
 
   public void insertToSecondTable(String newWord, String engWord) {
     try {
-      int id = getId(engWord);
       getStatement().executeUpdate(
             "insert into translation (translated_word, dictionary_id) values ('" + newWord +
-                  "'," + id + ")");
+                  "'," + getId(engWord) + ")");
     } catch (SQLException ex) {
       ex.printStackTrace();
     }
   }
 
   public Integer getId(String newWord) {
-    int temp = 0;
+    int temp = -1;
     try {
       ResultSet resultSet =
             getStatement().executeQuery("select id from dictionary where word = '" + newWord + "'");
@@ -54,4 +53,46 @@ public class Loader {
     }
     return temp;
   }
-}
+
+  public Map<String, Set<String>> selectFromBD() {
+    Map<String, Set<String>> map = new HashMap<>();
+    try {
+      ResultSet resultSet =
+            getStatement().executeQuery("select word, translated_word from dictionary d " +
+                  "join translation on d.id = dictionary_id");
+      while (resultSet.next()) {
+        String word = resultSet.getString("word");
+        String translated_word = resultSet.getString("translated_word");
+        Set<String> set = new HashSet<>();
+        if (map.containsKey(word)) {
+          map.get(word).add(translated_word);
+        } else {
+          set.add(translated_word);
+          map.put(word, set);
+        }
+      }
+    } catch (SQLException ex) {
+      ex.printStackTrace();
+    }
+    return map;
+  }
+
+  public void deleteWordFromFirstTable (String currentWord){
+    try {
+      getStatement().executeUpdate("delete  from dictionary where word = '" + currentWord + "'");
+      getStatement().executeUpdate("delete  from translation where dictionary_id = " + getId(currentWord));
+    } catch (SQLException ex) {
+      ex.printStackTrace();
+    }
+  }
+
+  public void deleteWordFromSecondTable (String currentWord){
+    try {
+      getStatement().executeUpdate("delete word from translation where translated_word = '" + currentWord + "'");
+    } catch (SQLException ex) {
+      ex.printStackTrace();
+    }
+  }
+  }
+
+

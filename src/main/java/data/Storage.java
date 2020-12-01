@@ -9,22 +9,12 @@ public class Storage {
 
   private static Map<String, Set<String>> storage = new HashMap<>();
 
-  public void addWord(String eng, String rus) {
-    Set<String> set = new HashSet<>();
-    if (storage.containsKey(eng)) {
-      set = storage.get(eng);
-      set.add(rus);
-    } else {
-      set.add(rus);
-      storage.put(eng, set);
-    }
-  }
-
   public void deleteWord(String eng) {
-    storage.remove(eng);
+    new Loader().deleteWordFromFirstTable(eng);
   }
 
   public Map<String, Set<String>> getStorage() {
+    storage = new Loader().selectFromBD();
     return storage;
   }
 

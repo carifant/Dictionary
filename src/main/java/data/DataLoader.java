@@ -9,33 +9,25 @@ import java.util.Properties;
 
 public class DataLoader {
 
-  private Connection firstConnection;
-  private String tableName1;
-  private String login;
-  private String password;
-
-
+  private Connection connection;
 
   {
     Properties properties = new Properties();
 
-    try(InputStream in = DataLoader.class.getClassLoader().getResourceAsStream("postgress.properties")) {
+    try (InputStream in = DataLoader.class.getClassLoader()
+          .getResourceAsStream("postgress.properties")) {
       properties.load(in);
-      tableName1 = properties.getProperty("tableName1");
       Class.forName("org.postgresql.Driver");
-      login = properties.getProperty("login");
-      password = properties.getProperty("password");
-      firstConnection =
-            DriverManager.getConnection("jdbc:postgresql://localhost:5432/" + tableName1,
-                  login, password);
-
+      connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/"
+                  + properties.getProperty("dbName"), properties.getProperty("login")
+            , properties.getProperty("password"));
 
     } catch (SQLException | IOException | ClassNotFoundException e) {
       e.printStackTrace();
     }
   }
 
-  public Connection getFirstConnection() {
-    return firstConnection;
+  public Connection getConnection() {
+    return connection;
   }
 }
