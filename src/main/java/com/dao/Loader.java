@@ -1,4 +1,4 @@
-package data;
+package com.dao;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -8,8 +8,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Loader {
+  private static Logger logger = LoggerFactory.getLogger(Loader.class);
   private Connection firstConnection = new DataLoader().getConnection();
   private Statement statement;
 
@@ -26,6 +29,7 @@ public class Loader {
     try {
       getStatement().executeUpdate("insert into dictionary (word) values ('" + newWord + "')");
     } catch (SQLException ex) {
+      logger.error(ex.getMessage(), ex);
       ex.printStackTrace();
     }
   }
@@ -36,6 +40,7 @@ public class Loader {
             "insert into translation (translated_word, dictionary_id) values ('" + newWord +
                   "'," + getId(engWord) + ")");
     } catch (SQLException ex) {
+      logger.error(ex.getMessage(), ex);
       ex.printStackTrace();
     }
   }
@@ -49,6 +54,7 @@ public class Loader {
         temp = resultSet.getInt("id");
       }
     } catch (SQLException ex) {
+      logger.error(ex.getMessage(), ex);
       ex.printStackTrace();
     }
     return temp;
@@ -72,6 +78,7 @@ public class Loader {
         }
       }
     } catch (SQLException ex) {
+      logger.error(ex.getMessage(), ex);
       ex.printStackTrace();
     }
     return map;
@@ -82,6 +89,7 @@ public class Loader {
       getStatement().executeUpdate("delete  from dictionary where word = '" + currentWord + "'");
       getStatement().executeUpdate("delete  from translation where dictionary_id = " + getId(currentWord));
     } catch (SQLException ex) {
+      logger.error(ex.getMessage(), ex);
       ex.printStackTrace();
     }
   }
@@ -90,6 +98,7 @@ public class Loader {
     try {
       getStatement().executeUpdate("delete word from translation where translated_word = '" + currentWord + "'");
     } catch (SQLException ex) {
+      logger.error(ex.getMessage(), ex);
       ex.printStackTrace();
     }
   }

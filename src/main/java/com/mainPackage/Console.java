@@ -1,11 +1,15 @@
-package mainPackage;
+package com.mainPackage;
 
+import com.dao.DataLoader;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Console {
 
+  private static Logger logger = LoggerFactory.getLogger(DataLoader.class);
   private String[] arr = new String[5];
 
   private BufferedReader getBufferedReader(){
@@ -40,6 +44,7 @@ public class Console {
     try {
       chooser();
     } catch (IOException e) {
+      logger.error(e.getMessage(), e);
       e.printStackTrace();
     }
   }

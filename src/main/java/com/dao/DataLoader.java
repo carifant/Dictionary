@@ -1,4 +1,4 @@
-package data;
+package com.dao;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -6,9 +6,12 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DataLoader {
 
+  private static Logger logger = LoggerFactory.getLogger(DataLoader.class);
   private Connection connection;
 
   {
@@ -23,6 +26,7 @@ public class DataLoader {
             , properties.getProperty("password"));
 
     } catch (SQLException | IOException | ClassNotFoundException e) {
+      logger.error(e.getMessage(), e);
       e.printStackTrace();
     }
   }

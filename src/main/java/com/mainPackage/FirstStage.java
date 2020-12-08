@@ -1,13 +1,17 @@
-package mainPackage;
+package com.mainPackage;
 
-import data.Loader;
-import data.Storage;
+import com.dao.DataLoader;
+import com.dao.Loader;
+import com.dao.Storage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class FirstStage {
+  private static Logger logger = LoggerFactory.getLogger(DataLoader.class);
   private String[] arr = new String[5];
   BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
@@ -42,6 +46,7 @@ public class FirstStage {
       chooser();
 
     } catch (IOException ex) {
+      logger.error(ex.getMessage(), ex);
       ex.printStackTrace();
     }
   }
@@ -57,6 +62,7 @@ public class FirstStage {
       new Loader().insertToSecondTable(tempRus, tempEng);
       System.out.println("Слово добавлено в словарь");
     } catch (IOException e) {
+      logger.error(e.getMessage(), e);
       e.printStackTrace();
     }
   }
@@ -72,6 +78,7 @@ public class FirstStage {
         System.out.println("Данное слово не обнаружено");
       }
     } catch (IOException e) {
+      logger.error(e.getMessage(), e);
       e.printStackTrace();
     }
   }
@@ -83,6 +90,7 @@ public class FirstStage {
       String tempEng = reader.readLine().toLowerCase();
       System.out.println(new Storage().getTranslate(tempEng));
     } catch (IOException e) {
+      logger.error(e.getMessage(), e);
       e.printStackTrace();
     }
   }

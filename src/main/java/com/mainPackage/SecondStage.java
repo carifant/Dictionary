@@ -1,11 +1,15 @@
-package mainPackage;
+package com.mainPackage;
 
+import com.dao.DataLoader;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SecondStage {
 
+  private static Logger logger = LoggerFactory.getLogger(DataLoader.class);
   private String[] arr = new String[3];
   BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
   private void setMethod() {
@@ -30,6 +34,7 @@ public class SecondStage {
         new Console().mainMethod();
       }
     } catch (IOException ex) {
+      logger.error(ex.getMessage(), ex);
       ex.printStackTrace();
     }
   }
