@@ -39,7 +39,6 @@ public class QuizGame {
           count++;
         }
       }
-
     } catch (IOException ex) {
       logger.error(ex.getMessage(), ex);
       ex.printStackTrace();

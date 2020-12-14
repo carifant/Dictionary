@@ -1,9 +1,9 @@
 package com.dao;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -14,20 +14,13 @@ import org.slf4j.LoggerFactory;
 public class Loader {
   private static Logger logger = LoggerFactory.getLogger(Loader.class);
   private Connection firstConnection = new DataLoader().getConnection();
-  private Statement statement;
-
-  public Statement getStatement() {
-    try {
-      statement = firstConnection.createStatement();
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-    return statement;
-  }
 
   public void insertToFirstTable(String newWord) {
     try {
-      getStatement().executeUpdate("insert into dictionary (word) values ('" + newWord + "')");
+      PreparedStatement preparedStatement =
+            firstConnection.prepareStatement("insert into dictionary (word) values (?)");
+      preparedStatement.setString(1, newWord);
+      preparedStatement.executeUpdate();
     } catch (SQLException ex) {
       logger.error(ex.getMessage(), ex);
       ex.printStackTrace();
@@ -36,9 +29,12 @@ public class Loader {
 
   public void insertToSecondTable(String newWord, String engWord) {
     try {
-      getStatement().executeUpdate(
-            "insert into translation (translated_word, dictionary_id) values ('" + newWord +
-                  "'," + getId(engWord) + ")");
+      PreparedStatement preparedStatement =
+            firstConnection.prepareStatement("insert into translation " +
+                  "(translated_word, dictionary_id) values (?,?)");
+      preparedStatement.setString(1, newWord);
+      preparedStatement.setInt(2, getId(engWord));
+      preparedStatement.executeUpdate();
     } catch (SQLException ex) {
       logger.error(ex.getMessage(), ex);
       ex.printStackTrace();
@@ -48,8 +44,10 @@ public class Loader {
   public Integer getId(String newWord) {
     int temp = -1;
     try {
-      ResultSet resultSet =
-            getStatement().executeQuery("select id from dictionary where word = '" + newWord + "'");
+      PreparedStatement preparedStatement =
+            firstConnection.prepareStatement("select id from dictionary where word = ?");
+      preparedStatement.setString(1, newWord);
+      ResultSet resultSet = preparedStatement.executeQuery();
       while (resultSet.next()) {
         temp = resultSet.getInt("id");
       }
@@ -63,9 +61,10 @@ public class Loader {
   public Map<String, Set<String>> selectFromBD() {
     Map<String, Set<String>> map = new HashMap<>();
     try {
-      ResultSet resultSet =
-            getStatement().executeQuery("select word, translated_word from dictionary d " +
+      PreparedStatement preparedStatement =
+            firstConnection.prepareStatement("select word, translated_word from dictionary d" +
                   "join translation on d.id = dictionary_id");
+      ResultSet resultSet = preparedStatement.executeQuery();
       while (resultSet.next()) {
         String word = resultSet.getString("word");
         String translated_word = resultSet.getString("translated_word");
@@ -84,24 +83,33 @@ public class Loader {
     return map;
   }
 
-  public void deleteWordFromFirstTable (String currentWord){
+  public void deleteWordFromFirstTable(String currentWord) {
     try {
-      getStatement().executeUpdate("delete  from dictionary where word = '" + currentWord + "'");
-      getStatement().executeUpdate("delete  from translation where dictionary_id = " + getId(currentWord));
+      PreparedStatement preparedStatement =
+            firstConnection.prepareStatement("delete from dictionary where word = ?");
+      preparedStatement.setString(1, currentWord);
+      preparedStatement.executeUpdate();
+      PreparedStatement preparedStatement1 =
+            firstConnection.prepareStatement("delete from translation where dictionary_id = ?");
+      preparedStatement1.setInt(1, getId(currentWord));
+      preparedStatement1.executeUpdate();
     } catch (SQLException ex) {
       logger.error(ex.getMessage(), ex);
       ex.printStackTrace();
     }
   }
 
-  public void deleteWordFromSecondTable (String currentWord){
+  public void deleteWordFromSecondTable(String currentWord) {
     try {
-      getStatement().executeUpdate("delete word from translation where translated_word = '" + currentWord + "'");
+      PreparedStatement preparedStatement =
+            firstConnection.prepareStatement("delete from dictionary where word = ?");
+      preparedStatement.setString(1, currentWord);
+      preparedStatement.executeUpdate();
     } catch (SQLException ex) {
       logger.error(ex.getMessage(), ex);
       ex.printStackTrace();
     }
   }
-  }
+}
 
 
